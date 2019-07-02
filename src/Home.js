@@ -1,24 +1,46 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React, { Component } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 class HomeScreen extends React.Component {
+ state = {
+    data: []
+  };
+
+  componentWillMount() {
+    this.fetchData();
+  }
+
+  
+
+  fetchData = async () => {
+    const response = await fetch("https://randomuser.me/api?results=15");
+    const json = await response.json();
+    this.setState({ data: json.results });
+  };
+
   render() {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Home Screen</Text>
-         <Text>Home Screen</Text>
-          <Text>Home Screen</Text>
-           <Text>Home Screen</Text>
-            <Text>Home Screen</Text>
-             <Text>Home Screen</Text>
-              <Text>Home Screen</Text>
-               <Text>Home Screen</Text>
-                <Text>Home Screen</Text>
-                
+      <View style={styles.container}>
+        <FlatList
+          data={this.state.data}
+          keyExtractor={(x, i) => i}
+          renderItem={({ item }) =>
+            <Text>
+              {`${item.name.first} ${item.name.last}`}
+            </Text>}
+        />
       </View>
     );
   }
 }
 
-
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 15,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
+  }
+});
 export default HomeScreen;

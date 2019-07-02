@@ -69,7 +69,7 @@ export default class App extends Component<Props> {
       
     <Provider store={store}>
       
-        <LoginForm />
+        <Router />
       
     </Provider>
      
