@@ -9,8 +9,14 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import firebase from 'firebase';
+import {Actions} from 'react-native-router-flux';
 import { Header,Button,Spinner } from './components/common';
-import LoginForm from './components/LoginForm'
+import LoginForm from './components/LoginForm';
+import {Provider} from 'react-redux';
+import {createStore,applyMiddleware} from 'redux';
+import ReduxThunk from 'redux-thunk';
+import reducers from './reducers';
+import Router from './Router';
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android:
@@ -20,7 +26,7 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
-  state={loggedIn:false}
+  state = { loggedIn: null };
   componentWillMount(){
     firebase.initializeApp({
     apiKey: "AIzaSyBi2B0tbbmPN-Da46Zldv7AJI-48Tq_NSc",
@@ -45,26 +51,30 @@ export default class App extends Component<Props> {
 
     switch (this.state.loggedIn){
       case true:
-        //return <Button onPress={() => firebase.auth().signOut()}>Log out</Button>
-        return (
-          <View>
-            <Text>Hello</Text>
-          </View>
-
-        );
+      return Actions.home()
       case false:
-        return <LoginForm />
+        return (
+           <LoginForm />
+          )
       default:
         return <Spinner size="large" />
     }
     
   }
   render() {
+    const store=createStore(reducers,{},applyMiddleware(ReduxThunk))
     return (
-     <View>
-      <Header headerText="Twitter" />
-      {this.renderContent()}
-     </View>
+  
+     
+      
+    <Provider store={store}>
+      
+        <LoginForm />
+      
+    </Provider>
+     
+     
+     
     );
   }
 }
